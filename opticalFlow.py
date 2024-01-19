@@ -37,7 +37,6 @@ def draw_box(flow):
     while y < len(v):
         while x < len(v[0]):
             if v[y,x] > threshold:
-                topLeftx = x
                 topLefty = y
                 out = True
                 break
@@ -46,6 +45,22 @@ def draw_box(flow):
             break
         x = 0
         y += 5
+        
+        
+    y = 0
+    x = 0
+    out = False
+    while x < len(v[0]):
+        while y < len(v):
+            if v[y,x] > threshold:
+                topLeftx = x
+                out = True
+                break
+            y += 5
+        if out:
+            break
+        y = 0
+        x += 5
     
     botRightx = 0
     botRighty = 0
@@ -55,7 +70,6 @@ def draw_box(flow):
     while y > 0:
         while x > 0:
             if v[y, x] > threshold:
-                botRightx = x
                 botRighty = y
                 out = True
                 break
@@ -64,6 +78,22 @@ def draw_box(flow):
             break
         x = len(v[0])-1
         y -= 5
+        
+    
+    y = len(v)-1
+    x = len(v[0])-1
+    out = False
+    while x > 0:
+        while y > 0:
+            if v[y,x] > threshold:
+                botRightx = x
+                out = True
+                break
+            y -= 5
+        if out:
+            break
+        y = len(v) -1
+        x -= 5
     
     bgr = np.zeros((h,w,3), np.uint8)
     cv2.rectangle(bgr, (topLeftx,topLefty), (botRightx,botRighty), (0,255,0))
