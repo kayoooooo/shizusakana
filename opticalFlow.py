@@ -22,45 +22,48 @@ def draw_hsv(flow):
     return bgr
 
 def draw_box(flow):
+    h,w = flow.shape[:2] 
     fx,fy = flow[:,:,0], flow[:,:,1] 
     
     v = np.sqrt(fx*fx + fy*fy)
     
+    iter = 5
+    threshold = 20
     topLeftx = 0
     topLefty = 0
     y = 0
     x = 0
-    out = false
+    out = False
     while y < len(v):
         while x < len(v[0]):
-            if v[y,x] > 50:
+            if v[y,x] > threshold:
                 topLeftx = x
                 topLefty = y
-                out = true
+                out = True
                 break
-            x += 10
+            x += 5
         if out:
             break
         x = 0
-        y += 10
+        y += 5
     
     botRightx = 0
     botRighty = 0
     y = len(v)-1
     x = len(v[0])-1
-    out = false
+    out = False
     while y > 0:
         while x > 0:
-            if v[y, x] > 50:
+            if v[y, x] > threshold:
                 botRightx = x
                 botRighty = y
-                out = true
+                out = True
                 break
-            x -= 10
+            x -= 5
         if out:
             break
         x = len(v[0])-1
-        y -= 10
+        y -= 5
     
     bgr = np.zeros((h,w,3), np.uint8)
     cv2.rectangle(bgr, (topLeftx,topLefty), (botRightx,botRighty), (0,255,0))
@@ -85,7 +88,7 @@ while True:
     gray_prev = gray_frame #preparation for next frame/loop
     
     img = draw_hsv(flow) 
-    #box = draw_box(flow) 
+    box = draw_box(flow) 
     
     end = time.time()
     deltaT = end - start
@@ -103,7 +106,8 @@ while True:
     #this is for viewing results, would most likely be removed.
     #cv2.imshow("Image", gray_frame)
     cv2.imshow("HSV", img)
-    #cv2.imshow("BOX", box)
+    cv2.imshow("BOX", box)
+    
     key = cv2.waitKey(1)
     if key == 27:
         break
